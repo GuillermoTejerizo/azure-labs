@@ -1,5 +1,5 @@
 # Laboratorio 0
-Este laboratorio es muye basico, simplemente existe para documentar todos los pasos que sigo. 
+Este laboratorio es muy basico, simplemente existe para documentar todos los pasos que sigo. 
 
 ## Objetivo
 El objetivo de este laboratorio es crear la cuenta de Microsoft Azure desde creo. Para completar crear la cuenta vamos a buscar configurar:<br>
