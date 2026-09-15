@@ -18,3 +18,7 @@ Antes de empezar con el laboratorio quiero usar este apartado para mencionar con
 ### 1.- Crear Resource Group
 Lo primero de todo, voy a crear el Resource Group que voy a usaren este laboratorio. Tendra de nombre `RG_Lab02_Storage`y estara en la region `Spain Central`, contara con las etiquetas `Project : Azure_labs` y `Lab : 02-Storage`
 ![Configuracion Inicial](./imagenes/conf_inicial.png)<br>
+
+### 2.- Crear Storage Account
+Busco en el buscador `Storage Account`. Despues aparece para crear la cuanta de almacenamiento, donde selecciono la suscripcion que voy a utilizar, `azure_labs`, y el grupo de recursos, `RG_Lab02_Storage`. Una vez he seleccionado la suscripcion y el grupo de recursos le voy a poner un nombre: `azlab02stotage1409` y la region `Spain Central`.<br>
+En la parte de `Servicio principal` he seleccionado `Azure Blob Storage`
