@@ -16,7 +16,7 @@ Antes de empezar con el laboratorio em gustaria mencionar y explicar los concept
 
 ## Procedimiento
 ### 1.- Preparacion
-Lo primero de todo es preparar el entorno de trabajo, que tendrá un **Resouce Group**, `RG_Lab03_CloudShell` con la ragion `spaincentral` y las etiquetas: `Project : Azure_labs`  y`Lab : 03-CloudShell`.<br>
+Lo primero de todo es preparar el entorno de trabajo, que tendra un **Resouce Group**, `RG_Lab03_CloudShell` con la ragion `spaincentral` y las etiquetas: `Project : Azure_labs`  y`Lab : 03-CloudShell`.<br>
 
 Para las comprobaciones quiero crear una **Storage Account**, `azlab03cloudshell1909`, con un contenedor llamado `lab03-container-portal` y que tenga dentro un documento de prueba. La cuenta de almacenamiento tendra un nivel de acceso privado.<br>
 
@@ -47,7 +47,7 @@ az account show \
     -o table
 ```
 **Nota:**<br>
-`--query` sirve para filtrar, seleccionar y modificar los datos que devuelven los comandos en la terminal. **Azure CLI** devuelve sus datos en formaton JSON. En este formato sería: `Nombre:name`. `Nombre` es el nombre que le das a la etiqueta del dato, y `name` indica el parametro de donde saca la informacion.
+`--query` sirve para filtrar, seleccionar y modificar los datos que devuelven los comandos en la terminal. **Azure CLI** devuelve sus datos en formaton JSON. En este formato seria: `Nombre:name`. `Nombre` es el nombre que le das a la etiqueta del dato, y `name` indica el parametro de donde saca la informacion.
 <br>
 
 ### 3.- Crear un Resource Group
