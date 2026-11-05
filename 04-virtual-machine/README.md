@@ -92,3 +92,97 @@ az vm list-skus \
 ![Respuesta consulta](./imagenes/disponibilidad_skus.png)
 <br>
 
+Lo que puedo observar es que la **Zona 2** esta restringida para los recursos de mi suscripcion, pero no indica nada de la **Zona 1** donde he puesto la VM. Con esto confirmo que lo mas probable sea problema de la capacidad de la zona, y para intentar solucionar ese problema voy a cambiar las **Availability options** de Zone 1 por **No infraestructure redundacy required**.<br>
+
+Lo primero que voy a comprobar es si el fallo ha sido antes de crear la VM o después, para ello voy a compobar si existe la VM:<br>
+```bash
+az vm show \
+    --resource-group RG_Lab04_LinuxVM \
+    --name vm-lab04-linux \
+    -o table
+```
+<br>
+
+![Comprbacion si existe la maquina virtual](./imagenes/error_comprobar_existir_vm.png)
+<br>
+
+Al existir la VM es mas sencillo eliminarla y crear de otra. Para elminarla uso:<br>
+```bash
+az vm delete \
+    --resource-group RG_Lab04_LinuxVM \
+    --name vm-lab04-linux \
+    --yes
+```
+<br>
+
+Si no se consigue borrar con eso (mi caso), se puede usar para borrar directamente el recurso:<br>
+```bash
+az resource delete \
+    --resource-group RG_Lab04_LinuxVM \
+    --resource-type Microsoft.Compute/VirtualMachines \
+    --name vm-lab04-linux
+```
+<br>
+
+Y despues compruebo los recursos que han quedado en **R:Lab04_LinuxVM**:<br>
+```bash
+az resource list \
+    --resource-group RG_Lab04_LinuxVM \
+    --yes
+```
+<br>
+
+![Recursos restantes de la VM](./imagenes/error_recursos_restantes.png)
+<br>
+
+De los recursos que aun quedan vamos a utilizar algunos:<br>
+
+| Recurso | Funcion | Reutilizar |
+|---------|---------|------------|
+| `vm-lab04-linux_key` | Es la clave publica SSH | Si |
+| `vm-lab04-linux-nsg` | Es el **Network Security Group** de la VM | Si |
+| `vm-lab04-linux-ip` | Es la IP de la VM | Si |
+| `vnet-lab04` | Es la red virtual | Si |
+| `vm-lab04-linux734` | Es la NIC de la VM, es mucho mejor crear una | No |
+| `vm-lab04-linux` | Es la VM, aparece porque esta en proceso de ser eliminada | No |
+| `vm-lab04-linux-OsDisk...` | Es el disco de la VM que ha fallado, es mucho mejor crear una nuevo | No |
+
+<br>
+
+Procedo a borrar los recursos que no vaya a usar uno a uno:<br>
+```bash
+az network nic delete \
+    --resource-group RG_Lab04_LinuxVM \
+    --name vm-lab04-linux734
+```
+<br>
+
+```bash
+az disk delete \
+    --resource-group RG_Lab04_LinuxVM \
+    --name vm-lab04-linux_OsDisk_1_3c41d0d7ae2b4044a3d5fb3b25f91b87 \
+    --yes
+```
+<br>
+
+Ahora voy a crear la VM, pero me aparece un nuevo problema... Llegado a este punto empiezo a pensar que Microsoft no quiere que practique lo que he aprendido en sus certificaciones. Este nuevo problema es que la suscripcion que tengo no me permite crear en esta region una VM con la configuracion inicial que tenia. En el siguiente punto de errores expliacre que es lo que pasa mas detalladamente.<br>
+
+### Disponibilidad de la Region para los recursos
+A la hora de crear la nueva VM he encontrado el problema de insuficiencia de vCPU. Este error me indica que necesito 2 vCPUs para la configuracion de **Ubuntu Server 24.04 LTS** con el tamanio `Standard_B2ats_V2` pero que solo me quedan 0 vCPU dispinible de la familia `standardBasv2Family`.<br>
+![Error con los vCPUs](./imagenes/error_vCPU.png)
+<br>
+
+Ante la duda de que aun estuviese consumiendo vCPUs la anterior VM decido comprobar la cuota que tengo exactamente:<br>
+```bash
+az vm list-usage \
+    --location spaincentral \
+    -o table
+```
+<br>
+
+![Resultado de la cuota disponible](./imagenes/resultado_cuota.png)
+<br>
+
+En el resultado de la consulta puedo observar que no tengo disponibles ningun vCPU en esta region para la familia `Standard Basv2 Family`. Ante esta situacion tengo dos opciones para solucinarlo: la primera consiste en cambiar el Tamanio por `Standard BS Family` que tengo disponibles 10 vCPUs para usar; la segunda opcion es comprobar distintas regiones para ver si tengo vCPUs disponibles. La opcion que voy a escoger es la segunda, me intersa de cara a futuro poder usar esa familia y que no me quiero rendir tan facilmente.<br>
+
+Tras un rato buscando si las regiones cercanas tenian disponibilidad y no encontrar resultado, he decidido decantarme por la primera opcion
